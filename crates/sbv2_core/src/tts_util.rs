@@ -1,6 +1,7 @@
 use std::io::Cursor;
 
 use crate::error::Result;
+use crate::jtalk::JTalkProcess;
 use crate::{jtalk, nlp, norm, tokenizer, utils};
 use hound::{SampleFormat, WavSpec, WavWriter};
 use ndarray::{concatenate, s, Array, Array1, Array2, Array3, Axis};
@@ -9,13 +10,13 @@ use tokenizers::Tokenizer;
 pub fn preprocess_parse_text(
     text: &str,
     jtalk: &jtalk::JTalk,
-) -> Result<(Vec<String>, Vec<i32>, Vec<i32>)> {
+) -> Result<(Vec<String>, Vec<i32>, Vec<i32>, String, JTalkProcess)> {
     let text = jtalk.num2word(text)?;
     let normalized_text = norm::normalize_text(&text);
 
     let process = jtalk.process_text(&normalized_text)?;
-    let result = process.g2p()?;
-    Ok(result)
+    let (phones, tones, word2ph) = process.g2p()?;
+    Ok((phones, tones, word2ph, normalized_text, process))
 }
 
 /// Parse text and return the input for synthesize
@@ -34,7 +35,8 @@ pub async fn parse_text(
         Box<dyn std::future::Future<Output = Result<ndarray::Array2<f32>>>>,
     >,
 ) -> Result<(Array2<f32>, Array1<i64>, Array1<i64>, Array1<i64>)> {
-    let (phones, tones, mut word2ph) = preprocess_parse_text(text, jtalk)?;
+    let (phones, tones, mut word2ph, normalized_text, process) =
+        preprocess_parse_text(text, jtalk)?;
     let (phones, tones, lang_ids) = nlp::cleaned_text_to_sequence(phones, tones);
 
     let phones = utils::intersperse(&phones, 0);
