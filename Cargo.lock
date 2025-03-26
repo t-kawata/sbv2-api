@@ -2313,6 +2313,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "sbv2_voicevox"
+version = "0.2.0-alpha6"
+dependencies = [
+ "anyhow",
+ "axum",
+ "sbv2_core",
+]
+
+[[package]]
 name = "sbv2_wasm"
 version = "0.2.0-alpha6"
 dependencies = [
