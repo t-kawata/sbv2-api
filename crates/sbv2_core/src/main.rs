@@ -31,7 +31,7 @@ fn main_inner() -> anyhow::Result<()> {
     }
 
     let audio =
-        tts_holder.easy_synthesize(ident, &text, 0, 0, tts::SynthesizeOptions::default())?;
+        tts_holder.easy_synthesize(ident, text, 0, 0, tts::SynthesizeOptions::default())?;
     fs::write("output.wav", audio)?;
 
     Ok(())
