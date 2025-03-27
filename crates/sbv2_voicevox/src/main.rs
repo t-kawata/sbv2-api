@@ -16,6 +16,7 @@ async fn create_audio_query(
     Query(request): Query<RequestCreateAudioQuery>,
 ) -> AppResult<()> {
     let (phones, tones, mut word2ph, normalized_text, process) = preprocess_parse_text(&request.text, &JTalk::new()?)?;
+    println!("{:?}", phones);
     Ok(())
 }
 
