@@ -196,6 +196,11 @@ impl JTalkProcess {
         Ok((phones, tones, new_word2ph))
     }
 
+    pub fn g2kana_tone(&self) -> Result<Vec<(String, i32)>> {
+        let (phones, tones, _) = self.g2p()?;
+        Ok(phone_tone_to_kana(phones, tones))
+    }
+
     fn distribute_phone(n_phone: i32, n_word: i32) -> Vec<i32> {
         let mut phones_per_word = vec![0; n_word as usize];
         for _ in 0..n_phone {

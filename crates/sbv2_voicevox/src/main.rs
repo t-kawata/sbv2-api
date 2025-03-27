@@ -13,9 +13,8 @@ struct RequestCreateAudioQuery {
 }
 
 async fn create_audio_query(Query(request): Query<RequestCreateAudioQuery>) -> AppResult<()> {
-    let (phones, tones, _, normalized_text, process) =
-        preprocess_parse_text(&request.text, &JTalk::new()?)?;
-    println!("{:?}", phones);
+    let (normalized_text, process) = preprocess_parse_text(&request.text, &JTalk::new()?)?;
+    let kana_tone_list = process.g2kana_tone()?;
     Ok(())
 }
 
