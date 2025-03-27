@@ -79,13 +79,13 @@ static LONG_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\w)(ー*)").unwrap
 fn phone_tone_to_kana(phones: Vec<String>, tones: Vec<i32>) -> Vec<(String, i32)> {
     let mut results = Vec::new();
     let mut current_mora = String::new();
-    for ((phone, next_phone), (tone, next_tone)) in phones
+    for ((phone, next_phone), (&tone, &next_tone)) in phones
         .iter()
         .zip(phones.iter().skip(1))
         .zip(tones.iter().zip(tones.iter().skip(1)))
     {
         if PUNCTUATIONS.contains(&phone.clone().as_str()) {
-            results.push((phone, tone));
+            results.push((phone.to_string(), tone));
             continue;
         }
         if CONSONANTS.contains(&phone.clone()) {
@@ -94,7 +94,13 @@ fn phone_tone_to_kana(phones: Vec<String>, tones: Vec<i32>) -> Vec<(String, i32)
             current_mora = phone.to_string()
         } else {
             current_mora += phone;
-            results.push((MORA_PHONEMES_TO_MORA_KATA.get(&current_mora).unwrap(), tone));
+            results.push((
+                MORA_PHONEMES_TO_MORA_KATA
+                    .get(&current_mora)
+                    .unwrap()
+                    .to_string(),
+                tone,
+            ));
             current_mora = String::new();
         }
     }
