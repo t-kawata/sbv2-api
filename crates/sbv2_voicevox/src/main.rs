@@ -12,11 +12,11 @@ struct RequestCreateAudioQuery {
     text: String,
 }
 
-async fn create_audio_query(Query(request): Query<RequestCreateAudioQuery>) -> AppResult<()> {
+async fn create_audio_query(Query(request): Query<RequestCreateAudioQuery>) -> AppResult<String> {
     let (normalized_text, process) = preprocess_parse_text(&request.text, &JTalk::new()?)?;
     let kana_tone_list = process.g2kana_tone()?;
     println!("{:?}", kana_tone_list);
-    Ok(())
+    Ok(normalized_text)
 }
 
 #[tokio::main]
