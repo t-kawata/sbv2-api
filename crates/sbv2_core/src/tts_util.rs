@@ -7,10 +7,7 @@ use hound::{SampleFormat, WavSpec, WavWriter};
 use ndarray::{concatenate, s, Array, Array1, Array2, Array3, Axis};
 use tokenizers::Tokenizer;
 
-pub fn preprocess_parse_text(
-    text: &str,
-    jtalk: &jtalk::JTalk,
-) -> Result<(String, JTalkProcess)> {
+pub fn preprocess_parse_text(text: &str, jtalk: &jtalk::JTalk) -> Result<(String, JTalkProcess)> {
     let text = jtalk.num2word(text)?;
     let normalized_text = norm::normalize_text(&text);
 
