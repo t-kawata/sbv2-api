@@ -76,7 +76,7 @@ static MORA_PATTERN: Lazy<Vec<String>> = Lazy::new(|| {
 });
 static LONG_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\w)(ー*)").unwrap());
 
-fn phone_tone_to_kana(phones: Vec<String>, tones: Vec<i32>) {
+fn phone_tone_to_kana(phones: Vec<String>, tones: Vec<i32>) -> Vec<(String, i32)> {
     let mut results = Vec::new();
     let mut current_mora = String::new();
     for ((phone, next_phone), (tone, next_tone)) in phones
@@ -98,6 +98,7 @@ fn phone_tone_to_kana(phones: Vec<String>, tones: Vec<i32>) {
             current_mora = String::new();
         }
     }
+    results
 }
 
 pub struct JTalkProcess {
