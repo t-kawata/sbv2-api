@@ -15,12 +15,15 @@ struct RequestCreateAudioQuery {
 async fn create_audio_query(Query(request): Query<RequestCreateAudioQuery>) -> AppResult<()> {
     let (normalized_text, process) = preprocess_parse_text(&request.text, &JTalk::new()?)?;
     let kana_tone_list = process.g2kana_tone()?;
+    println!("{:?}", kana_tone_list);
     Ok(())
 }
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let app = Router::new().route("/", get(|| async { "Hello, world!" }));
+    let app = Router::new()
+        .route("/", get(|| async { "Hello, world!" }))
+        .route("/audio_query", get(create_audio_query));
     let listener = TcpListener::bind("0.0.0.0:8080").await?;
     axum::serve(listener, app).await?;
     Ok(())
