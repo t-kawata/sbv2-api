@@ -1,6 +1,6 @@
-use axum::{extract::Query, routing::get, Router, Json};
+use axum::{extract::Query, response::IntoResponse, routing::get, Json, Router};
 use sbv2_core::{jtalk::JTalk, tts_util::preprocess_parse_text};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use tokio::net::TcpListener;
 
 use error::AppResult;
@@ -12,21 +12,24 @@ struct RequestCreateAudioQuery {
     text: String,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize)]
 struct ResponseCreateAudioQuery {
     kana: String,
     tone: i32,
 }
 
-async fn create_audio_query(Query(request): Query<RequestCreateAudioQuery>) -> AppResult<Json<Vec<ResponseCreateAudioQuery>>> {
-    let (normalized_text, process) = preprocess_parse_text(&request.text, &JTalk::new()?)?;
+async fn create_audio_query(
+    Query(request): Query<RequestCreateAudioQuery>,
+) -> AppResult<impl IntoResponse> {
+    let (_, process) = preprocess_parse_text(&request.text, &JTalk::new()?)?;
     let kana_tone_list = process.g2kana_tone()?;
-    let response = kana_tone_list.iter().map(|(kana, tone)| {
-        ResponseCreateAudioQuery {
+    let response = kana_tone_list
+        .iter()
+        .map(|(kana, tone)| ResponseCreateAudioQuery {
             kana: kana.clone(),
             tone: *tone,
-        }
-    }).collect::<Vec<_>>();
+        })
+        .collect::<Vec<_>>();
     Ok(Json(response))
 }
 

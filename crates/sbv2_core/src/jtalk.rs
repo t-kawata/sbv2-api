@@ -76,10 +76,7 @@ static MORA_PATTERN: Lazy<Vec<String>> = Lazy::new(|| {
 });
 static LONG_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\w)(ー*)").unwrap());
 
-fn phone_tone_to_kana(
-    phones: Vec<String>,
-    tones: Vec<i32>,
-) -> Vec<(String, i32)> {
+fn phone_tone_to_kana(phones: Vec<String>, tones: Vec<i32>) -> Vec<(String, i32)> {
     let phones = &phones[1..];
     let tones = &tones[1..];
     let mut results = Vec::new();
