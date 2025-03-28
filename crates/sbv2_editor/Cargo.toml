@@ -1,5 +1,5 @@
 [package]
-name = "sbv2_voicevox"
+name = "sbv2_editor"
 version.workspace = true
 edition.workspace = true
 description.workspace = true
