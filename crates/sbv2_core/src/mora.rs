@@ -25,7 +25,7 @@ static MORA_LIST_ADDITIONAL: Lazy<Vec<Mora>> = Lazy::new(|| {
     data.additional
 });
 
-pub static MORA_PHONEMES_TO_MORA_KATA: Lazy<HashMap<String, (String, Option<String>, String)>> =
+pub static MORA_PHONEMES_TO_MORA_KATA: Lazy<HashMap<String, String>> =
     Lazy::new(|| {
         let mut map = HashMap::new();
         for mora in MORA_LIST_MINIMUM.iter() {
@@ -35,11 +35,7 @@ pub static MORA_PHONEMES_TO_MORA_KATA: Lazy<HashMap<String, (String, Option<Stri
                     mora.consonant.clone().unwrap_or("".to_string()),
                     mora.vowel
                 ),
-                (
-                    mora.mora.clone(),
-                    mora.consonant.clone(),
-                    mora.vowel.clone(),
-                ),
+                mora.mora.clone(),
             );
         }
         map

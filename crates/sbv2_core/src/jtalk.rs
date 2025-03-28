@@ -79,7 +79,7 @@ static LONG_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\w)(ー*)").unwrap
 fn phone_tone_to_kana(
     phones: Vec<String>,
     tones: Vec<i32>,
-) -> Vec<(String, Option<String>, String, i32)> {
+) -> Vec<(String, i32)> {
     let phones = &phones[1..];
     let tones = &tones[1..];
     let mut results = Vec::new();
@@ -90,7 +90,7 @@ fn phone_tone_to_kana(
         .zip(tones.iter().zip(tones.iter().skip(1)))
     {
         if PUNCTUATIONS.contains(&phone.clone().as_str()) {
-            results.push((phone.to_string(), None, "pau".to_string(), tone));
+            results.push((phone.to_string(), tone));
             continue;
         }
         if CONSONANTS.contains(&phone.clone()) {
@@ -99,8 +99,8 @@ fn phone_tone_to_kana(
             current_mora = phone.to_string()
         } else {
             current_mora += phone;
-            let (kana, consonant, vowel) = MORA_PHONEMES_TO_MORA_KATA.get(&current_mora).unwrap();
-            results.push((kana.to_string(), consonant.clone(), vowel.to_string(), tone));
+            let kana = MORA_PHONEMES_TO_MORA_KATA.get(&current_mora).unwrap();
+            results.push((kana.to_string(), tone));
             current_mora = String::new();
         }
     }
@@ -196,7 +196,7 @@ impl JTalkProcess {
         Ok((phones, tones, new_word2ph))
     }
 
-    pub fn g2kana_tone(&self) -> Result<Vec<(String, Option<String>, String, i32)>> {
+    pub fn g2kana_tone(&self) -> Result<Vec<(String, i32)>> {
         let (phones, tones, _) = self.g2p()?;
         Ok(phone_tone_to_kana(phones, tones))
     }
