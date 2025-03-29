@@ -383,7 +383,7 @@ impl TTSModelHolder {
                 if t.is_empty() {
                     continue;
                 }
-                let (bert_ori, phones, tones, lang_ids) = self.parse_text_neo(t, given_tones)?;
+                let (bert_ori, phones, tones, lang_ids) = self.parse_text_neo(t.to_string(), given_tones)?;
 
                 let vits2 = self
                     .find_model(ident)?
