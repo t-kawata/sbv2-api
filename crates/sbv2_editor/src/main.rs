@@ -1,5 +1,10 @@
 use axum::extract::State;
-use axum::{extract::Query, response::IntoResponse, routing::{get, post}, Json, Router};
+use axum::{
+    extract::Query,
+    response::IntoResponse,
+    routing::{get, post},
+    Json, Router,
+};
 use sbv2_core::{jtalk::JTalk, tts::TTSModelHolder, tts_util::preprocess_parse_text};
 use serde::{Deserialize, Serialize};
 use tokio::{fs, net::TcpListener, sync::Mutex};
