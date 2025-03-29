@@ -205,6 +205,23 @@ impl TTSModelHolder {
     ) -> Result<(Array2<f32>, Array1<i64>, Array1<i64>, Array1<i64>)> {
         crate::tts_util::parse_text_blocking(
             text,
+            None,
+            &self.jtalk,
+            &self.tokenizer,
+            |token_ids, attention_masks| {
+                crate::bert::predict(&mut self.bert, token_ids, attention_masks)
+            },
+        )
+    }
+
+    pub fn parse_text_neo(
+        &mut self,
+        text: String,
+        given_tones: Option<Vec<i32>>,
+    ) -> Result<(Array2<f32>, Array1<i64>, Array1<i64>, Array1<i64>)> {
+        crate::tts_util::parse_text_blocking(
+            &text,
+            given_tones,
             &self.jtalk,
             &self.tokenizer,
             |token_ids, attention_masks| {
@@ -295,6 +312,78 @@ impl TTSModelHolder {
                     continue;
                 }
                 let (bert_ori, phones, tones, lang_ids) = self.parse_text(t)?;
+
+                let vits2 = self
+                    .find_model(ident)?
+                    .vits2
+                    .as_mut()
+                    .ok_or(Error::ModelNotFoundError(ident.into().to_string()))?;
+                let audio = model::synthesize(
+                    vits2,
+                    bert_ori.to_owned(),
+                    phones,
+                    Array1::from_vec(vec![speaker_id]),
+                    tones,
+                    lang_ids,
+                    style_vector.clone(),
+                    options.sdp_ratio,
+                    options.length_scale,
+                    0.677,
+                    0.8,
+                )?;
+                audios.push(audio.clone());
+                if i != texts.len() - 1 {
+                    audios.push(Array3::zeros((1, 1, 22050)));
+                }
+            }
+            concatenate(
+                Axis(2),
+                &audios.iter().map(|x| x.view()).collect::<Vec<_>>(),
+            )?
+        } else {
+            let (bert_ori, phones, tones, lang_ids) = self.parse_text(text)?;
+
+            let vits2 = self
+                .find_model(ident)?
+                .vits2
+                .as_mut()
+                .ok_or(Error::ModelNotFoundError(ident.into().to_string()))?;
+            model::synthesize(
+                vits2,
+                bert_ori.to_owned(),
+                phones,
+                Array1::from_vec(vec![speaker_id]),
+                tones,
+                lang_ids,
+                style_vector,
+                options.sdp_ratio,
+                options.length_scale,
+                0.677,
+                0.8,
+            )?
+        };
+        tts_util::array_to_vec(audio_array)
+    }
+
+    pub fn easy_synthesize_neo<I: Into<TTSIdent> + Copy>(
+        &mut self,
+        ident: I,
+        text: &str,
+        given_tones: Option<Vec<i32>>,
+        style_id: i32,
+        speaker_id: i64,
+        options: SynthesizeOptions,
+    ) -> Result<Vec<u8>> {
+        self.find_and_load_model(ident)?;
+        let style_vector = self.get_style_vector(ident, style_id, options.style_weight)?;
+        let audio_array = if options.split_sentences {
+            let texts: Vec<&str> = text.split('\n').collect();
+            let mut audios = vec![];
+            for (i, t) in texts.iter().enumerate() {
+                if t.is_empty() {
+                    continue;
+                }
+                let (bert_ori, phones, tones, lang_ids) = self.parse_text_neo(t, given_tones)?;
 
                 let vits2 = self
                     .find_model(ident)?

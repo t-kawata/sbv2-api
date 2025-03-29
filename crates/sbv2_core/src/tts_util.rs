@@ -34,7 +34,6 @@ pub async fn parse_text(
     let (normalized_text, process) = preprocess_parse_text(text, jtalk)?;
     let (phones, tones, mut word2ph) = process.g2p()?;
     let (phones, tones, lang_ids) = nlp::cleaned_text_to_sequence(phones, tones);
-
     let phones = utils::intersperse(&phones, 0);
     let tones = utils::intersperse(&tones, 0);
     let lang_ids = utils::intersperse(&lang_ids, 0);
@@ -99,6 +98,7 @@ pub async fn parse_text(
 #[allow(clippy::type_complexity)]
 pub fn parse_text_blocking(
     text: &str,
+    given_tones: Option<Vec<i32>>,
     jtalk: &jtalk::JTalk,
     tokenizer: &Tokenizer,
     bert_predict: impl FnOnce(Vec<i64>, Vec<i64>) -> Result<ndarray::Array2<f32>>,
@@ -107,7 +107,10 @@ pub fn parse_text_blocking(
     let normalized_text = norm::normalize_text(&text);
 
     let process = jtalk.process_text(&normalized_text)?;
-    let (phones, tones, mut word2ph) = process.g2p()?;
+    let (phones, mut tones, mut word2ph) = process.g2p()?;
+    if let Some(given_tones) = given_tones {
+        tones = given_tones;
+    }
     let (phones, tones, lang_ids) = nlp::cleaned_text_to_sequence(phones, tones);
 
     let phones = utils::intersperse(&phones, 0);
