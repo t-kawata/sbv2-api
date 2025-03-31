@@ -35,9 +35,13 @@ struct ResponseCreateAudioQuery {
 }
 
 async fn create_audio_query(
+    State(state): State<AppState>,
     Query(request): Query<RequestCreateAudioQuery>,
 ) -> AppResult<impl IntoResponse> {
-    let (text, process) = preprocess_parse_text(&request.text, &JTalk::new()?)?;
+    let (text, process) = {
+        let mut tts_model = state.tts_model.lock().await;
+        preprocess_parse_text(&request.text, &tts_model.jtalk)?
+    };
     let kana_tone_list = process.g2kana_tone()?;
     let audio_query = kana_tone_list
         .iter()

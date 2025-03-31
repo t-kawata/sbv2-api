@@ -41,7 +41,7 @@ pub struct TTSModelHolder {
     tokenizer: Tokenizer,
     bert: Session,
     models: Vec<TTSModel>,
-    jtalk: jtalk::JTalk,
+    pub jtalk: jtalk::JTalk,
     max_loaded_models: Option<usize>,
 }
 
