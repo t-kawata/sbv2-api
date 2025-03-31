@@ -1,5 +1,5 @@
 use crate::error::{Error, Result};
-use crate::mora::{MORA_KATA_TO_MORA_PHONEMES, VOWELS};
+use crate::mora::{CONSONANTS, MORA_KATA_TO_MORA_PHONEMES, MORA_PHONEMES_TO_MORA_KATA, VOWELS};
 use crate::norm::{replace_punctuation, PUNCTUATIONS};
 use jpreprocess::{kind, DefaultTokenizer, JPreprocess, SystemDictionaryConfig, UserDictionary};
 use once_cell::sync::Lazy;
@@ -75,6 +75,34 @@ static MORA_PATTERN: Lazy<Vec<String>> = Lazy::new(|| {
     sorted_keys
 });
 static LONG_PATTERN: Lazy<Regex> = Lazy::new(|| Regex::new(r"(\w)(ー*)").unwrap());
+
+fn phone_tone_to_kana(phones: Vec<String>, tones: Vec<i32>) -> Vec<(String, i32)> {
+    let phones = &phones[1..];
+    let tones = &tones[1..];
+    let mut results = Vec::new();
+    let mut current_mora = String::new();
+    for ((phone, next_phone), (&tone, &next_tone)) in phones
+        .iter()
+        .zip(phones.iter().skip(1))
+        .zip(tones.iter().zip(tones.iter().skip(1)))
+    {
+        if PUNCTUATIONS.contains(&phone.clone().as_str()) {
+            results.push((phone.to_string(), tone));
+            continue;
+        }
+        if CONSONANTS.contains(&phone.clone()) {
+            assert_eq!(current_mora, "");
+            assert_eq!(tone, next_tone);
+            current_mora = phone.to_string()
+        } else {
+            current_mora += phone;
+            let kana = MORA_PHONEMES_TO_MORA_KATA.get(&current_mora).unwrap();
+            results.push((kana.to_string(), tone));
+            current_mora = String::new();
+        }
+    }
+    results
+}
 
 pub struct JTalkProcess {
     jpreprocess: Arc<JPreprocessType>,
@@ -163,6 +191,11 @@ impl JTalkProcess {
         let tones: Vec<i32> = new_phone_tone_list.iter().map(|(_, x)| *x).collect();
 
         Ok((phones, tones, new_word2ph))
+    }
+
+    pub fn g2kana_tone(&self) -> Result<Vec<(String, i32)>> {
+        let (phones, tones, _) = self.g2p()?;
+        Ok(phone_tone_to_kana(phones, tones))
     }
 
     fn distribute_phone(n_phone: i32, n_word: i32) -> Vec<i32> {
