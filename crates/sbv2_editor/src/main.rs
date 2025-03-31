@@ -8,7 +8,6 @@ use axum::{
 };
 use sbv2_core::tts_util::kata_tone2phone_tone;
 use sbv2_core::{
-    jtalk::JTalk,
     tts::{SynthesizeOptions, TTSModelHolder},
     tts_util::preprocess_parse_text,
 };
