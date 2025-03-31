@@ -2,6 +2,8 @@ use std::io::Cursor;
 
 use crate::error::Result;
 use crate::jtalk::JTalkProcess;
+use crate::mora::MORA_KATA_TO_MORA_PHONEMES;
+use crate::norm::PUNCTUATIONS;
 use crate::{jtalk, nlp, norm, tokenizer, utils};
 use hound::{SampleFormat, WavSpec, WavWriter};
 use ndarray::{concatenate, s, Array, Array1, Array2, Array3, Axis};
@@ -111,6 +113,7 @@ pub fn parse_text_blocking(
     if let Some(given_tones) = given_tones {
         tones = given_tones;
     }
+    println!("tones: {:?}", tones);
     let (phones, tones, lang_ids) = nlp::cleaned_text_to_sequence(phones, tones);
 
     let phones = utils::intersperse(&phones, 0);
@@ -187,4 +190,24 @@ pub fn array_to_vec(audio_array: Array3<f32>) -> Result<Vec<u8>> {
     }
     writer.finalize()?;
     Ok(cursor.into_inner())
+}
+
+pub fn kata_tone2phone_tone(kata_tone: Vec<(String, i32)>) -> Vec<(String, i32)> {
+    let mut results = vec![("_".to_string(), 0)];
+    for (mora, tone) in kata_tone {
+        if PUNCTUATIONS.contains(&mora.as_str()) {
+            results.push((mora, 0));
+            continue;
+        } else {
+            let (consonant, vowel) = MORA_KATA_TO_MORA_PHONEMES.get(&mora).unwrap();
+            if let Some(consonant) = consonant {
+                results.push((consonant.to_string(), tone));
+                results.push((vowel.to_string(), tone));
+            } else {
+                results.push((vowel.to_string(), tone));
+            }
+        }
+    }
+    results.push(("_".to_string(), 0));
+    results
 }
