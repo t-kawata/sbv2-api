@@ -1,13 +1,17 @@
 use axum::extract::State;
 use axum::{
     extract::Query,
+    http::header::CONTENT_TYPE,
     response::IntoResponse,
     routing::{get, post},
     Json, Router,
-    http::header::CONTENT_TYPE,
 };
 use sbv2_core::tts_util::kata_tone2phone_tone;
-use sbv2_core::{jtalk::JTalk, tts::{TTSModelHolder, SynthesizeOptions}, tts_util::preprocess_parse_text};
+use sbv2_core::{
+    jtalk::JTalk,
+    tts::{SynthesizeOptions, TTSModelHolder},
+    tts_util::preprocess_parse_text,
+};
 use serde::{Deserialize, Serialize};
 use tokio::{fs, net::TcpListener, sync::Mutex};
 
@@ -75,10 +79,7 @@ async fn synthesis(
         .map(|query| (query.kana.clone(), query.tone))
         .collect::<Vec<_>>();
     let phone_tone = kata_tone2phone_tone(phone_tone);
-    let tones = phone_tone
-        .iter()
-        .map(|(_, tone)| *tone)
-        .collect::<Vec<_>>();
+    let tones = phone_tone.iter().map(|(_, tone)| *tone).collect::<Vec<_>>();
     let buffer = {
         let mut tts_model = state.tts_model.lock().await;
         tts_model.easy_synthesize_neo(
