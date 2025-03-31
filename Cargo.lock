@@ -2318,6 +2318,8 @@ version = "0.2.0-alpha6"
 dependencies = [
  "anyhow",
  "axum",
+ "dotenvy",
+ "env_logger",
  "log",
  "sbv2_core",
  "serde",

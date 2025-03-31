@@ -4,8 +4,9 @@ use axum::{
     response::IntoResponse,
     routing::{get, post},
     Json, Router,
+    http::header::CONTENT_TYPE,
 };
-use sbv2_core::{jtalk::JTalk, tts::TTSModelHolder, tts_util::preprocess_parse_text};
+use sbv2_core::{jtalk::JTalk, tts::{TTSModelHolder, SynthesizeOptions}, tts_util::preprocess_parse_text};
 use serde::{Deserialize, Serialize};
 use tokio::{fs, net::TcpListener, sync::Mutex};
 
@@ -51,11 +52,12 @@ async fn create_audio_query(
 #[derive(Deserialize)]
 pub struct RequestSynthesis {
     text: String,
-    speaker_id: i32,
+    speaker_id: i64,
     sdp_ratio: f32,
     length_scale: f32,
     style_id: i32,
     audio_query: Vec<AudioQuery>,
+    ident: String,
 }
 
 async fn synthesis(
@@ -68,8 +70,8 @@ async fn synthesis(
     let buffer = {
         let mut tts_model = state.tts_model.lock().await;
         tts_model.easy_synthesize_neo(
-            &ident,
-            &text,
+            &request.ident,
+            &request.text,
             Some(tones),
             request.style_id,
             request.speaker_id,
