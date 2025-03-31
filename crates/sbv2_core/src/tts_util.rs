@@ -113,7 +113,6 @@ pub fn parse_text_blocking(
     if let Some(given_tones) = given_tones {
         tones = given_tones;
     }
-    println!("tones: {:?}", tones);
     let (phones, tones, lang_ids) = nlp::cleaned_text_to_sequence(phones, tones);
 
     let phones = utils::intersperse(&phones, 0);

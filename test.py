@@ -2,12 +2,12 @@ import requests
 
 
 data = (requests.get("http://localhost:8080/audio_query", params={
-    "text": "こんにちは",
+    "text": "こんにちは、今日はいい天気ですね。",
 })).json()
 print(data)
 
 data = (requests.post("http://localhost:8080/synthesis", json={
-    "text": "こんにちは",
+    "text": data["text"],
     "ident": "tsukuyomi",
     "speaker_id": 0,
     "style_id": 0,
