@@ -1,10 +1,19 @@
 # SBV2-API
 
-## 注意：本バージョンはアルファ版です。
-安定版を利用したい場合は[こちら](https://github.com/tuna2134/sbv2-api/tree/v0.1.x)をご覧ください。
+> [!CAUTION]
+> 本バージョンはアルファ版です。
+> 
+> 安定版を利用したい場合は[こちら](https://github.com/neodyland/sbv2-api/tree/v0.1.x)をご覧ください。
 
-## 注意: オプションの辞書はLGPLです。
-オプションの辞書を使用する場合、バイナリの内部の辞書部分について、LGPLが適用されます。
+> [!CAUTION]
+> オプションの辞書はLGPLです。
+> 
+> オプションの辞書を使用する場合、バイナリの内部の辞書部分について、LGPLが適用されます。
+
+> [!NOTE]
+> このレポジトリはメンテナンスの都合上、[tuna2134](https:://github.com/tuna2134)氏の所属する[Neodyland](https://neody.land/)へとリポジトリ所在地を移動しました。
+> 
+> 引き続きtuna2134氏がメインメンテナとして管理しています。
 
 ## プログラミングに詳しくない方向け
 
@@ -20,7 +29,7 @@ JP-Extra しか対応していません。(基本的に対応する予定もあ�
 
 ## 変換方法
 
-[こちら](https://github.com/tuna2134/sbv2-api/tree/main/scripts/convert)を参照してください。
+[こちら](https://github.com/neodyland/sbv2-api/tree/main/scripts/convert)を参照してください。
 
 ## Todo
 
