@@ -5,15 +5,10 @@ on:
 
 jobs:
   check:
-    runs-on: ${{ matrix.machine.runner }}
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        machine:
-          - platform: amd64
-            runner: ubuntu-latest
-          - platform: arm64
-            runner: ubuntu-24.04-arm
         components:
           - rustfmt
           - clippy
