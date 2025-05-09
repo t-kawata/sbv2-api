@@ -1,5 +1,5 @@
 [workspace]
-resolver = "2"
+resolver = "3"
 members = ["./crates/sbv2_api", "./crates/sbv2_core", "./crates/sbv2_bindings", "./crates/sbv2_wasm"]
 
 [workspace.package]
@@ -8,7 +8,7 @@ edition = "2021"
 description = "Style-Bert-VITSの推論ライブラリ"
 license = "MIT"
 readme = "./README.md"
-repository = "https://github.com/tuna2134/sbv2-api"
+repository = "https://github.com/neodyland/sbv2-api"
 documentation = "https://docs.rs/sbv2_core"
 
 [workspace.dependencies]

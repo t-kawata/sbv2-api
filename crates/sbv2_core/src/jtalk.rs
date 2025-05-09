@@ -81,7 +81,7 @@ fn phone_tone_to_kana(phones: Vec<String>, tones: Vec<i32>) -> Vec<(String, i32)
     let tones = &tones[1..];
     let mut results = Vec::new();
     let mut current_mora = String::new();
-    for ((phone, next_phone), (&tone, &next_tone)) in phones
+    for ((phone, _next_phone), (&tone, &next_tone)) in phones
         .iter()
         .zip(phones.iter().skip(1))
         .zip(tones.iter().zip(tones.iter().skip(1)))

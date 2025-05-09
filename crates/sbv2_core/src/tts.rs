@@ -214,6 +214,7 @@ impl TTSModelHolder {
         )
     }
 
+    #[allow(clippy::type_complexity)]
     pub fn parse_text_neo(
         &mut self,
         text: String,

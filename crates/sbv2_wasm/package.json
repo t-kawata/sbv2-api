@@ -11,6 +11,7 @@
 	},
 	"keywords": [],
 	"author": "tuna2134",
+        "contributes": ["neodyland"],
 	"license": "MIT",
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

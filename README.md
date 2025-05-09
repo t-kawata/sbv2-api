@@ -17,7 +17,7 @@
 
 ## プログラミングに詳しくない方向け
 
-[こちら](https://github.com/tuna2134/sbv2-gui?tab=readme-ov-file)を参照してください。
+[こちら](https://github.com/tuna2134/sbv2-gui)を参照してください。
 
 コマンドやpythonの知識なしで簡単に使えるバージョンです。(できることはほぼ同じ)
 
@@ -75,7 +75,7 @@ CPUの場合は
 ```sh
 docker run -it --rm -p 3000:3000 --name sbv2 \
 -v ./models:/work/models --env-file .env \
-ghcr.io/tuna2134/sbv2-api:cpu
+ghcr.io/neodyland/sbv2-api:cpu
 ```
 
 <details>
@@ -90,7 +90,7 @@ CPUの場合は
 ```bash
 docker run --platform linux/amd64 -it --rm -p 3000:3000 --name sbv2 \
 -v ./models:/work/models --env-file .env \
-ghcr.io/tuna2134/sbv2-api:cpu
+ghcr.io/neodyland/sbv2-api:cpu
 ```
 </details>
 
@@ -99,7 +99,7 @@ CUDAの場合は
 docker run -it --rm -p 3000:3000 --name sbv2 \
 -v ./models:/work/models --env-file .env \
 --gpus all \
-ghcr.io/tuna2134/sbv2-api:cuda
+ghcr.io/neodyland/sbv2-api:cuda
 ```
 
 ### 起動確認

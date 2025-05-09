@@ -21,10 +21,7 @@ pub fn load_model<P: AsRef<[u8]>>(model_file: P, bert: bool) -> Result<Session> 
     #[cfg(feature = "cuda")]
     {
         #[allow(unused_mut)]
-        let mut cuda = ort::execution_providers::CUDAExecutionProvider::default()
-            .with_conv_algorithm_search(
-                ort::execution_providers::cuda::CUDAExecutionProviderCuDNNConvAlgoSearch::Default,
-            );
+        let mut cuda = ort::execution_providers::CUDAExecutionProvider::default();
         #[cfg(feature = "cuda_tf32")]
         {
             cuda = cuda.with_tf32(true);
@@ -101,11 +98,9 @@ pub fn synthesize(
         "noise_scale" => noise_scale,
         "noise_scale_w" => noise_scale_w,
     })?;
-
     let audio_array = outputs["output"]
-        .try_extract_tensor::<f32>()?
+        .try_extract_array::<f32>()?
         .into_dimensionality::<Ix3>()?
         .to_owned();
-
     Ok(audio_array)
 }

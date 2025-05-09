@@ -53,12 +53,16 @@ struct SynthesizeRequest {
     text: String,
     ident: String,
     #[serde(default = "sdp_default")]
+    #[schema(example = 0.0_f32)]
     sdp_ratio: f32,
     #[serde(default = "length_default")]
+    #[schema(example = 1.0_f32)]
     length_scale: f32,
     #[serde(default = "style_id_default")]
+    #[schema(example = 0_i32)]
     style_id: i32,
     #[serde(default = "speaker_id_default")]
+    #[schema(example = 0_i64)]
     speaker_id: i64,
 }
 

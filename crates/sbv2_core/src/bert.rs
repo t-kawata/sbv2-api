@@ -14,11 +14,9 @@ pub fn predict(
             "attention_mask" => TensorRef::from_array_view((vec![1, attention_masks.len() as i64], attention_masks.as_slice()))?,
         }
     )?;
-
     let output = outputs["output"]
-        .try_extract_tensor::<f32>()?
+        .try_extract_array::<f32>()?
         .into_dimensionality::<Ix2>()?
         .to_owned();
-
     Ok(output)
 }

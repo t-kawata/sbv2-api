@@ -2,9 +2,17 @@ FROM rust AS builder
 WORKDIR /work
 COPY . .
 RUN cargo build -r --bin sbv2_api -F cuda,cuda_tf32
-FROM nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04
+FROM ubuntu AS upx
 WORKDIR /work
+RUN apt update && apt-get install -y upx
 COPY --from=builder /work/target/release/sbv2_api /work/main
 COPY --from=builder /work/target/release/*.so /work
+RUN upx --best --lzma /work/main
+RUN find /work -maxdepth 1 -name "*.so" -exec strip --strip-unneeded {} +
+RUN find /work -maxdepth 1 -name "*.so" -exec upx --best --lzma {} +
+FROM nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04
+WORKDIR /work
+COPY --from=upx /work/main /work/main
+COPY --from=builder /work/*.so /work
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/work
 CMD ["/work/main"]
