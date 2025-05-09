@@ -136,6 +136,7 @@ impl TTSModel {
     /// -------
     /// voice_data : bytes
     ///     音声データ
+    #[allow(clippy::too_many_arguments)]
     fn synthesize<'p>(
         &'p mut self,
         py: Python<'p>,

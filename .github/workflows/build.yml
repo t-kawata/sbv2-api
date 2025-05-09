@@ -1,4 +1,4 @@
-name: CI
+name: Build
 
 on:
   push:
@@ -6,7 +6,6 @@ on:
       - main
     tags:
       - '*'
-  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -29,7 +28,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
-      - run: docker build . -f .github/workflows/CI.Dockerfile --tag ci
+      - run: docker build . -f .github/workflows/build.Dockerfile --tag ci
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
@@ -111,6 +110,7 @@ jobs:
         with:
           name: wheels-sdist
           path: ./crates/sbv2_bindings/dist
+
   python-wheel:
     name: Wheel Upload
     runs-on: ubuntu-latest
