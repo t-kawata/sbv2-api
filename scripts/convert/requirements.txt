@@ -1,5 +1,6 @@
-style-bert-vits2
+git+https://github.com/neodyland/style-bert-vits2-ref
 onnxsim
 numpy<2
 zstandard
 onnxruntime
+cmake<4

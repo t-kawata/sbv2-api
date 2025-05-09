@@ -101,11 +101,9 @@ pub fn synthesize(
         "noise_scale" => noise_scale,
         "noise_scale_w" => noise_scale_w,
     })?;
-
     let audio_array = outputs["output"]
-        .try_extract_tensor::<f32>()?
+        .try_extract_array::<f32>()?
         .into_dimensionality::<Ix3>()?
         .to_owned();
-
     Ok(audio_array)
 }

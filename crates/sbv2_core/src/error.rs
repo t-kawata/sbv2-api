@@ -28,6 +28,8 @@ pub enum Error {
     Base64Error(#[from] base64::DecodeError),
     #[error("other")]
     OtherError(String),
+    #[error("Style error: {0}")]
+    StyleError(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
