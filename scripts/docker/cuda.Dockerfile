@@ -4,7 +4,7 @@ COPY . .
 RUN cargo build -r --bin sbv2_api -F cuda,cuda_tf32
 FROM ubuntu AS upx
 WORKDIR /work
-RUN apt update && apt-get install -y upx
+RUN apt update && apt-get install -y upx binutils
 COPY --from=builder /work/target/release/sbv2_api /work/main
 COPY --from=builder /work/target/release/*.so /work
 RUN upx --best --lzma /work/main
