@@ -12,6 +12,6 @@ RUN find /work -maxdepth 1 -name "*.so" -exec strip --strip-unneeded {} +
 FROM nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04
 WORKDIR /work
 COPY --from=upx /work/main /work/main
-COPY --from=builder /work/*.so /work
+COPY --from=upx /work/*.so /work
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/work
 CMD ["/work/main"]

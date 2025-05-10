@@ -13,5 +13,5 @@ RUN find /work -maxdepth 1 -name "*.so" -exec upx --best --lzma {} +
 FROM gcr.io/distroless/cc-debian12
 WORKDIR /work
 COPY --from=upx /work/main /work/main
-COPY --from=builder /work/*.so /work
+COPY --from=upx /work/*.so /work
 CMD ["/work/main"]
