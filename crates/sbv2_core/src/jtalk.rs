@@ -13,7 +13,9 @@ type JPreprocessType = JPreprocess<DefaultTokenizer>;
 #[cfg(feature = "agpl_dict")]
 fn agpl_dict() -> Result<Option<UserDictionary>> {
     Ok(Some(
-        UserDictionary::load(include_bytes!(concat!(env!("OUT_DIR"), "/all.bin")))
+        // UserDictionary::load(include_bytes!(concat!(env!("OUT_DIR"), "/all.bin")))
+        //     .map_err(|e| Error::LinderaError(e.to_string()))?,
+        UserDictionary::load(include_bytes!("../../sbv2-dict/output/all.bin"))
             .map_err(|e| Error::LinderaError(e.to_string()))?,
     ))
 }
