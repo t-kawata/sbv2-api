@@ -6,7 +6,7 @@ use std::path::PathBuf;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // let static_dir = home_dir().unwrap().join(".cache/sbv2");
     // let static_path = static_dir.join("all.bin");
-    let dir_path = Path::new("../sbv2-dict/output");
+    let dir_path = Path::new("../../../sbv2-dict/output");
     fs::create_dir_all(dir_path)?;
     let all_bin_path = dir_path.join("all.bin");
     let static_path = PathBuf::from(all_bin_path);
